@@ -1,0 +1,5 @@
+INDEX VERSION 1.134+/mnt/DATA/FPT/HSF301/workspace/.metadata/.plugins/org.eclipse.jdt.core
+1328846680.index
+1865797976.index
+4070522590.index
+778079415.index

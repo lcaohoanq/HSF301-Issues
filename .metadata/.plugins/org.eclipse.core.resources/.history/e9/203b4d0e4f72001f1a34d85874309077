@@ -1,0 +1,15 @@
+package com.fe.pojo;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name= "students")
+public class Student {
+
+	private int id;
+	private String firstName;
+	private String lastName;
+	private int marks;
+	
+}
