@@ -8,14 +8,14 @@
   transaction-type="RESOURCE_LOCAL">
   <properties>
    <property name="javax.persistence.jdbc.driver"
-    value="com.mysql.cj.jdbc.Driver" />
+    value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
    <property name="javax.persistence.jdbc.url"
-    value="jdbc:mysql://localhost:3303/hsf301_chapter01?useSSL=false;serverTimezone=UTC" />
-   <property name="javax.persistence.jdbc.user" value="root" />
+    value="jdbc:sqlserver://localhost:1433;DatabaseName=hsf301_chapter01;encrypt=true;trustServerCertificate=true;" />
+   <property name="javax.persistence.jdbc.user" value="sa" />
    <property name="javax.persistence.jdbc.password"
-    value="Luucaohoang1604^^" />
+    value="Iloveyou123!" />
    <property name="hibernate.dialect"
-    value="org.hibernate.dialect.MySQLDialect" />
+    value="org.hibernate.dialect.SQLServerDialect" />
    <property name="hibernate.show_sql" value="true" />
    <property name="hibernate.hbm2ddl.auto"
     value="create" />
