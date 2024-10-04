@@ -83,6 +83,7 @@ public class StudentDAO {
 				s.setFirstName(student.getFirstName());
 				s.setLastName(student.getLastName());
 				s.setMark(student.getMark());
+				em.merge(s);
 				em.getTransaction().commit();
 			}
 			
