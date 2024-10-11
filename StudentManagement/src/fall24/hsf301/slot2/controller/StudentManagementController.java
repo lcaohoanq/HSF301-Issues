@@ -1,21 +1,27 @@
 package fall24.hsf301.slot2.controller;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import fall24.hsf301.slot02.pojo.Student;
 import fall24.hsf301.slot02.service.IStudentService;
 import fall24.hsf301.slot02.service.StudentService;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
-public class StudentManagementController {
+public class StudentManagementController implements Initializable{
 
 	private IStudentService studentService;
-	public StudentManagementController() {
-		studentService  = new StudentService("JPAs");
-	}
 	
 	@FXML
 	private TextField txtStudentId;
@@ -33,6 +39,28 @@ public class StudentManagementController {
 	private Button btnDelete;
 	@FXML
 	private Button btnCancel;
+	
+	@FXML 
+	private TableColumn<Student, Long> studentId;
+	@FXML 
+	private TableColumn<Student, String> firstName;
+	@FXML 
+	private TableColumn<Student, String> lastName;
+	@FXML 
+	private TableColumn<Student, Integer> mark;
+	@FXML 
+	private TableView<Student> tblStudents;
+	
+	//để show lên tableview thì cần một model
+	private ObservableList<Student> tableModel;
+	//lắng nghe sự kiện
+	//load trong constructor
+	
+	public StudentManagementController() {
+		studentService  = new StudentService("JPAs");
+		
+		tableModel = FXCollections.observableArrayList(studentService.getStudents());
+	}
 	
 	@FXML
 	public void btnAddOnAction() {
@@ -54,7 +82,7 @@ public class StudentManagementController {
 
 	        // Save the student details
 	        studentService.save(new Student(firstName, lastName, markValue));
-
+	        
 	        // Show success alert
 	        Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
 	        successAlert.setTitle("Success");
@@ -153,6 +181,15 @@ public class StudentManagementController {
 	@FXML
 	public void btnCancleOnAction() {
 		Platform.exit();
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		studentId.setCellValueFactory(new PropertyValueFactory<>("id")); //sẽ gọi getter trong model
+		firstName.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+		lastName.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+		mark.setCellValueFactory(new PropertyValueFactory<>("mark"));
+		tblStudents.setItems(tableModel);
 	}
 	
 	
