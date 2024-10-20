@@ -9,21 +9,21 @@ import javax.persistence.Persistence;
 import fall24.hsf301.slot02.pojo.Student;
 
 
-public class StudentDAO {
+public class JStudentDAO implements IStudentDAO{
 
 	private static EntityManager em;
 	private static EntityManagerFactory emf;
 	
-	public StudentDAO(String persistenceName) {
+	public JStudentDAO(String persistenceName) {
 		emf = Persistence.createEntityManagerFactory(persistenceName);
 	}
 	
 	
-	public void save(Student student) {
+	public void save(Student Student) {
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
-			em.persist(student);
+			em.persist(Student);
 			em.getTransaction().commit();
 		}catch(Exception ex) {
 			em.getTransaction().rollback();
@@ -32,25 +32,25 @@ public class StudentDAO {
 	}
 	
 	public List<Student> getStudents(){
-		List<Student> students = null;
+		List<Student> Students = null;
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
-			students = em.createQuery("from Student").getResultList();
+			Students = em.createQuery("from Student").getResultList();
 		}catch(Exception ex) {
 			System.out.println("Error: " + ex.getMessage());
 		}finally {
 			em.close();
 		}
-		return students;
+		return Students;
 	}
 	
-	public void delete(Long studentId) {
+	public void delete(Long StudentId) {
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
-			Student student = em.find(Student.class, studentId);
-			em.remove(student);
+			Student Student = em.find(Student.class, StudentId);
+			em.remove(Student);
 			em.getTransaction().commit();			
 		}catch(Exception ex) {
 			System.out.println("Error: " + ex.getMessage());
@@ -59,30 +59,30 @@ public class StudentDAO {
 		}
 	}
 	
-	public Student findById(Long studentId) {
-		Student student = null;
+	public Student findById(Long StudentId) {
+		Student Student = null;
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
-			student = em.find(Student.class, studentId);
+			Student = em.find(Student.class, StudentId);
 		}catch(Exception ex) {
 			System.out.println("Error: " + ex.getMessage());
 		}finally {
 			em.close();
 		}
-		return student;
+		return Student;
 	}
 	
-	public void update(Student student) {
+	public void update(Student Student) {
 		try {
 			em = emf.createEntityManager();
 			em.getTransaction().begin();
 			
-			Student s = em.find(Student.class, student.getId());
+			Student s = em.find(Student.class, Student.getId());
 			if(s != null) {
-				s.setFirstName(student.getFirstName());
-				s.setLastName(student.getLastName());
-				s.setMark(student.getMark());
+				s.setFirstName(Student.getFirstName());
+				s.setLastName(Student.getLastName());
+				s.setMark(Student.getMark());
 				em.merge(s);
 				em.getTransaction().commit();
 			}

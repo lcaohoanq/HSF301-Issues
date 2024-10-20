@@ -1,7 +1,7 @@
 package fall24.hsf301.slot02.gui;
 
 import java.util.Scanner;
-import fall24.hsf301.slot02.dao.StudentDAO;
+import fall24.hsf301.slot02.dao.JStudentDAO;
 import fall24.hsf301.slot02.pojo.Student;
 import fall24.hsf301.slot02.service.IStudentService;
 import fall24.hsf301.slot02.service.StudentService;
@@ -10,11 +10,11 @@ public class MainGUI {
     public static void main(String[] args) {
         String jpaName = "JPAs";
         
-        StudentDAO studentDAO = new StudentDAO(jpaName);
-        Student student = new Student("Duong", "Manh", 1);
-        studentDAO.save(student);
+        JStudentDAO StudentDAO = new JStudentDAO(jpaName);
+        Student Student = new Student("Duong", "Manh", 1);
+        StudentDAO.save(Student);
 
-        IStudentService studentService = new StudentService(jpaName);
+        IStudentService StudentService = new StudentService(jpaName, 1);
 
         int n = -1;
 
@@ -43,39 +43,39 @@ public class MainGUI {
                     return;
 
                 case 1:
-                    Student s = studentService.readInformation();
-                    studentService.save(s);
+                    Student s = StudentService.readInformation();
+                    StudentService.save(s);
                     break;
 
                 case 2:
-                    studentService.getStudents().forEach(System.out::println);
+                    StudentService.getStudents().forEach(System.out::println);
                     break;
 
                 case 3:
-                    System.out.println("Enter studentId: ");
+                    System.out.println("Enter StudentId: ");
                     if (sc.hasNextLong()) {
                         long id = sc.nextLong();
-                        System.out.println(studentService.findById(id));
+                        System.out.println(StudentService.findById(id));
                     } else {
-                        System.out.println("Invalid input. Please enter a valid student ID.");
+                        System.out.println("Invalid input. Please enter a valid Student ID.");
                         sc.next(); // Clear the invalid input
                     }
                     break;
 
                 case 4:
-                    System.out.println("Enter studentId to delete: ");
+                    System.out.println("Enter StudentId to delete: ");
                     if (sc.hasNextLong()) {
                         long idToDelete = sc.nextLong();
-                        studentService.delete(idToDelete);
+                        StudentService.delete(idToDelete);
                         System.out.println("Delete Success");
                     } else {
-                        System.out.println("Invalid input. Please enter a valid student ID.");
+                        System.out.println("Invalid input. Please enter a valid Student ID.");
                         sc.next(); // Clear the invalid input
                     }
                     break;
 
                 case 5:
-                    studentService.update(studentService.readInformation());
+                    StudentService.update(StudentService.readInformation());
                     break;
 
                 default:

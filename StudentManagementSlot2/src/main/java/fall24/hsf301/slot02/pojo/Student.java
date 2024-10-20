@@ -15,7 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="students")
+@Table(name="Students")
 public class Student {
 
 	@Id
@@ -32,7 +32,7 @@ public class Student {
 	private int mark;
 	
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "student_id")
+	@JoinColumn(name = "Student_id")
 	private Set<Book> books;
 	
 	public Student() {

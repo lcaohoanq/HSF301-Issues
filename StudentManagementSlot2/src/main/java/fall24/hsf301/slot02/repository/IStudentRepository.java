@@ -6,9 +6,9 @@ import fall24.hsf301.slot02.pojo.Student;
 
 public interface IStudentRepository {
 
-	void save(Student student);	
+	void save(Student Student);	
 	List<Student> getStudents();	
-	void delete(Long studentId);	
-	Student findById(Long studentId);
-	void update(Student student);	
+	void delete(Long StudentId);	
+	Student findById(Long StudentId);
+	void update(Student Student);	
 }

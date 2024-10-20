@@ -30,8 +30,8 @@ public class Book {
 	private String isbn;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="student_id")
-	private Student student;
+	@JoinColumn(name="Student_id")
+	private Student Student;
 	
 	public Long getId() {
 		return id;

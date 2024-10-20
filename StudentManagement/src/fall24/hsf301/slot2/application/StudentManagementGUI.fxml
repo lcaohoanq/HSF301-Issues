@@ -51,7 +51,7 @@
 			layoutY="544.0" mnemonicParsing="false" onAction="#btnDeleteOnAction"
 			prefHeight="46.0" prefWidth="125.0" text="Delete" />
 		<Button id="btnCancel" fx:id="btnCancel" layoutX="456.0"
-			layoutY="544.0" mnemonicParsing="false" onAction="#btnCancleOnAction"
+			layoutY="544.0" mnemonicParsing="false" onAction="#btnCancelOnAction"
 			prefHeight="46.0" prefWidth="125.0" text="Cancel" />
 	</children>
 </AnchorPane>
