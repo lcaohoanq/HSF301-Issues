@@ -167,6 +167,9 @@ public class MoiveManagementController implements Initializable {
 		
 		Director existingDirector = directorRepository.findById(Integer.parseInt(directorId));
 
+		if(existingDirector == null)
+			throw new Exception("Director not found");
+		
 		if (movieName.isEmpty() || durationStr.isEmpty() || actor.isEmpty() || status.isEmpty()
 				|| directorId.isEmpty()) {
 			throw new Exception("All fields are required.");
@@ -181,8 +184,8 @@ public class MoiveManagementController implements Initializable {
 		//special characters such as @, #, $, &,(, ).
 		
 		int duration = Integer.parseInt(durationStr);
-		if (duration <= 120 && duration >= 75) {
-			throw new Exception("Value for Duration <= 120 and >= 75");
+		if (duration < 75 || duration > 120) {
+		    throw new Exception("Value for Duration must be between 75 and 120.");
 		}
 		
 		//Value for Status is enum = {active, inactive, coming}
