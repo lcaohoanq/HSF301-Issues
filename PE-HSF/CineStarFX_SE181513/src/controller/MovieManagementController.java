@@ -9,7 +9,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -23,255 +22,258 @@ import pe.hsf301.fall24.repository.director.IDirectorRepository;
 import pe.hsf301.fall24.repository.movie.IMovieRepository;
 import pe.hsf301.fall24.repository.movie.MovieRepo;
 import util.AlertHandler;
+import util.ValidationHandler;
 
-public class MovieManagementController implements Initializable {
+public class MovieManagementController extends ValidationHandler<Movie> implements Initializable {
 
-	private final IMovieRepository movieRepository;
-	private final IDirectorRepository directorRepository;
-	private final ObservableList<Movie> tableModel;
+    // Constants
+    private static final String HIBERNATE_CONFIG = "hibernate.cfg.xml";
+    private static final List<String> VALID_STATUSES = List.of("active", "inactive", "coming");
+    private static final int MIN_DURATION = 75;
+    private static final int MAX_DURATION = 120;
+    private static final int MAX_MOVIE_NAME_LENGTH = 20;
+    private static final String MOVIE_NAME_PATTERN = "^[A-Z][a-zA-Z]*(\\s[A-Z][a-zA-Z]*)*$";
 
-	@FXML
-	private TextField txtMovieId;
-	@FXML
-	private TextField txtMovieName;
-	@FXML
-	private TextField txtDuration;
-	@FXML
-	private TextField txtActor;
-	@FXML
-	private TextField txtStatus;
-	@FXML
-	private TextField txtDirectorId;
-	@FXML
-	private ComboBox<Director> comboBoxDirector;
+    // Repositories
+    private final IMovieRepository movieRepository;
+    private final IDirectorRepository directorRepository;
+    private final ObservableList<Movie> tableModel;
 
-	@FXML
-	private Button btnAdd;
-	@FXML
-	private Button btnUpdate;
-	@FXML
-	private Button btnDelete;
-	@FXML
-	private Button btnCancel;
+    // FXML Controls
+    @FXML private TextField txtMovieId;
+    @FXML private TextField txtMovieName;
+    @FXML private TextField txtDuration;
+    @FXML private TextField txtActor;
+    @FXML private TextField txtStatus;
+    @FXML private ComboBox<Director> comboBoxDirector;
+    @FXML private Button btnAdd;
+    @FXML private Button btnUpdate;
+    @FXML private Button btnDelete;
+    @FXML private Button btnCancel;
+    @FXML private TableView<Movie> tblMovies;
+    @FXML private TableColumn<Movie, Integer> movieId;
+    @FXML private TableColumn<Movie, String> movieName;
+    @FXML private TableColumn<Movie, Integer> duration;
+    @FXML private TableColumn<Movie, String> actor;
+    @FXML private TableColumn<Movie, String> status;
+    @FXML private TableColumn<Movie, Director> directorId;
 
-	@FXML
-	private TableView<Movie> tblMovies;
-	@FXML
-	private TableColumn<Movie, Integer> movieId;
-	@FXML
-	private TableColumn<Movie, String> movieName;
-	@FXML
-	private TableColumn<Movie, Integer> duration;
-	@FXML
-	private TableColumn<Movie, String> actor;
-	@FXML
-	private TableColumn<Movie, String> status;
-	@FXML
-	private TableColumn<Movie, Integer> directorId;
+    private int roleID;
 
-	private int roleID;
-	public static String hibernateConfig = "hibernate.cfg.xml";
+    public MovieManagementController() {
+        movieRepository = new MovieRepo(HIBERNATE_CONFIG);
+        directorRepository = new DirectorRepo(HIBERNATE_CONFIG);
+        tableModel = FXCollections.observableArrayList(movieRepository.findAll());
+    }
 
-	public MovieManagementController() {
-		movieRepository = new MovieRepo(hibernateConfig);
-		directorRepository = new DirectorRepo(hibernateConfig);
-		tableModel = FXCollections.observableArrayList(movieRepository.findAll());
-	}
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        initializeTableColumns();
+        initializeTableView();
+        initializeComboBox();
+        setupEventHandlers();
+    }
 
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		initializeTableColumns();
-		tblMovies.setItems(tableModel);
-		tblMovies.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue != null) {
-				showMovie(newValue);
-				// disable the id text field when initialize
-				// readonly
-				txtMovieId.setEditable(false);
-			}
-		});
-		// Load directors into ComboBox
-	    loadDirectorsIntoComboBox();
-	}
+    private void initializeTableColumns() {
+        movieId.setCellValueFactory(new PropertyValueFactory<>("movieId"));
+        movieName.setCellValueFactory(new PropertyValueFactory<>("movieName"));
+        duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
+        actor.setCellValueFactory(new PropertyValueFactory<>("actor"));
+        status.setCellValueFactory(new PropertyValueFactory<>("status"));
+        directorId.setCellValueFactory(new PropertyValueFactory<>("director"));
+    }
 
-	private void loadDirectorsIntoComboBox() {
-	    // Fetch all directors from the repository
-	    List<Director> directors = directorRepository.findAll();
-	    
-	    // Convert the list to an observable list
-	    ObservableList<Director> directorList = FXCollections.observableArrayList(directors);
-	    
-	    // Set the directors in the ComboBox
-	    comboBoxDirector.setItems(directorList);
-	}
+    private void initializeTableView() {
+        tblMovies.setItems(tableModel);
+    }
 
-	private void initializeTableColumns() {
-		movieId.setCellValueFactory(new PropertyValueFactory<>("movieId"));
-		movieName.setCellValueFactory(new PropertyValueFactory<>("movieName"));
-		duration.setCellValueFactory(new PropertyValueFactory<>("duration"));
-		actor.setCellValueFactory(new PropertyValueFactory<>("actor"));
-		status.setCellValueFactory(new PropertyValueFactory<>("status"));
-		directorId.setCellValueFactory(new PropertyValueFactory<>("director"));
-	}
+    private void initializeComboBox() {
+        List<Director> directors = directorRepository.findAll();
+        comboBoxDirector.setItems(FXCollections.observableArrayList(directors));
+        comboBoxDirector.setPromptText("Select Director");
+    }
 
-	@FXML
-	public void btnAddOnAction() {
-		try {
-			Movie newMovie = getMovieFromInput();
-			movieRepository.save(newMovie);
-			
-			// Add the new movie to the top of the list
-	        tableModel.add(0, newMovie);  // Insert the new movie at the top (index 0)
-	        tblMovies.getSelectionModel().selectFirst();  // Highlight the newly added movie
-			
-//			refreshDataTable();
-			AlertHandler.showAlert("Success", "Student successfully added.");
-		} catch (Exception e) {
-			AlertHandler.showAlert("Error", e.getMessage());
-		}
-	}
+    private void setupEventHandlers() {
+        tblMovies.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                showMovie(newValue);
+                txtMovieId.setEditable(false);
+            }
+        });
 
-	@FXML
-	public void btnUpdateOnAction() {
-		try {
-			Integer id = Integer.parseInt(txtMovieId.getText().trim());
-			Movie existingMovie = movieRepository.findById(id);
-			if (existingMovie == null) {
-				throw new Exception("Movie not found with id: " + id);
-			}
-			updateStudentFromInput(existingMovie);
-			movieRepository.update(existingMovie);
-			refreshDataTable();
-			AlertHandler.showAlert("Success", "Movie updated successfully.");
-		} catch (Exception e) {
-			AlertHandler.showAlert("Error", e.getMessage());
-		}
-	}
+        // Add listeners for real-time validation
+        txtMovieName.textProperty().addListener((observable, oldValue, newValue) -> {
+            validateMovieName(newValue);
+        });
 
-	@FXML
-	public void btnDeleteOnAction() {
-		try {
-			Integer id = Integer.parseInt(txtMovieId.getText().trim());
-			if (movieRepository.findById(id) == null) {
-				throw new Exception("Movie not found with id: " + id);
-			}
-			movieRepository.delete(id);
-			refreshDataTable();
-			AlertHandler.showAlert("Success", "Movie deleted successfully.");
-		} catch (Exception e) {
-			AlertHandler.showAlert("Error", e.getMessage());
-		}
-	}
+        txtDuration.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                txtDuration.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+        });
+    }
 
-	@FXML
-	public void btnCancelOnAction() {
-		Platform.exit();
-	}
+    @FXML
+    public void btnAddOnAction() {
+        try {
+            Movie newMovie = getMovieFromInput();
+            movieRepository.save(newMovie);
+            tableModel.add(0, newMovie);
+            tblMovies.getSelectionModel().selectFirst();
+            clearInputFields();
+            AlertHandler.showAlert("Success", "Movie successfully added.");
+        } catch (Exception e) {
+            AlertHandler.showAlert("Error", e.getMessage());
+        }
+    }
 
-	private Movie getMovieFromInput() throws Exception {
-		String movieName = txtMovieName.getText().trim();
-		String durationStr = txtDuration.getText().trim();
-		String actor = txtActor.getText().trim();
-		String status = txtStatus.getText().trim();
-		String directorId = txtDirectorId.getText().trim();
-		
-		System.out.println("MovieName: " + movieName);
-		System.out.println("Duration: " + durationStr);
-		System.out.println("Actor: " + actor);
-		System.out.println("Status: " + status);
-		System.out.println("DirectorId: " + directorId);
-		
-		Director existingDirector = directorRepository.findById(Integer.parseInt(directorId));
+    @FXML
+    public void btnUpdateOnAction() {
+        try {
+            Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
+            if (selectedMovie == null) {
+                throw new Exception("Please select a movie to update.");
+            }
+            updateMovieFromInput(selectedMovie);
+            movieRepository.update(selectedMovie);
+            refreshDataTable();
+            AlertHandler.showAlert("Success", "Movie updated successfully.");
+        } catch (Exception e) {
+            AlertHandler.showAlert("Error", e.getMessage());
+        }
+    }
 
-		if(existingDirector == null)
-			throw new Exception("Director not found");
-		
-		if (movieName.isEmpty() || durationStr.isEmpty() || actor.isEmpty() || status.isEmpty()
-				|| directorId.isEmpty()) {
-			throw new Exception("All fields are required.");
-		}
-		
-		//valid movie name is less then 20 character
-		if(movieName.length() >= 20)
-			throw new Exception("MovieName must less than 20 characters");
+    @FXML
+    public void btnDeleteOnAction() {
+        try {
+            Movie selectedMovie = tblMovies.getSelectionModel().getSelectedItem();
+            if (selectedMovie == null) {
+                throw new Exception("Please select a movie to delete.");
+            }
+            movieRepository.delete(selectedMovie.getMovieId());
+            tableModel.remove(selectedMovie);
+            clearInputFields();
+            AlertHandler.showAlert("Success", "Movie deleted successfully.");
+        } catch (Exception e) {
+            AlertHandler.showAlert("Error", e.getMessage());
+        }
+    }
 
-		//Each word of the MovieName must begin with the capital letter. 
-		//MovieName don’t allowed with number (0, 1, 2 9) or 
-		//special characters such as @, #, $, &,(, ).
-		
-		int duration = Integer.parseInt(durationStr);
-		if (duration < 75 || duration > 120) {
-		    throw new Exception("Value for Duration must be between 75 and 120.");
-		}
-		
-		//Value for Status is enum = {active, inactive, coming}
-		if(!List.of("active", "inactive", "coming").contains(status))
-			throw new Exception("Value for Status is enum = {active, inactive, coming}");
-		
+    @FXML
+    public void btnCancelOnAction() {
+        Platform.exit();
+    }
 
-		return new Movie(movieName, duration, actor, status, existingDirector);
-	}
+    private Movie getMovieFromInput() throws Exception {
+        validateInputFields();
+        
+        String movieName = txtMovieName.getText().trim();
+        int duration = Integer.parseInt(txtDuration.getText().trim());
+        String actor = txtActor.getText().trim();
+        String status = txtStatus.getText().trim().toLowerCase();
+        Director director = comboBoxDirector.getValue();
 
-	private void updateStudentFromInput(Movie movie) throws Exception {
-		Movie updatedInfo = getMovieFromInput();
-		movie.setMovieName(updatedInfo.getMovieName());
-		movie.setDuration(updatedInfo.getDuration());
-		movie.setActor(updatedInfo.getActor());
-		movie.setActor(updatedInfo.getStatus());
-		movie.setDirector(updatedInfo.getDirector());
-	}
+        Movie movie = new Movie(movieName, duration, actor, status, director);
+        return valid(movie);
+    }
 
-	private void showMovie(Movie movie) {
-		txtMovieId.setText(String.valueOf(movie.getMovieId()));
-		txtMovieName.setText(movie.getMovieName());
-		txtDuration.setText(String.valueOf(movie.getDuration()));
-		txtActor.setText(String.valueOf(movie.getActor()));
-		txtStatus.setText(String.valueOf(movie.getStatus()));
-		txtDirectorId.setText(String.valueOf(movie.getDirector().getId()));
-	}
+    private void validateInputFields() throws Exception {
+        if (txtMovieName.getText().trim().isEmpty() ||
+            txtDuration.getText().trim().isEmpty() ||
+            txtActor.getText().trim().isEmpty() ||
+            txtStatus.getText().trim().isEmpty() ||
+            comboBoxDirector.getValue() == null) {
+            throw new Exception("All fields are required.");
+        }
+    }
 
-	private void refreshDataTable() {
-		tableModel.setAll(movieRepository.findAll());
-		clearInputFields();
-	}
+    private void validateMovieName(String movieName) {
+        if (movieName.length() > MAX_MOVIE_NAME_LENGTH) {
+            txtMovieName.setStyle("-fx-border-color: red;");
+        } else if (!movieName.matches(MOVIE_NAME_PATTERN)) {
+            txtMovieName.setStyle("-fx-border-color: red;");
+        } else {
+            txtMovieName.setStyle("");
+        }
+    }
 
-	private void clearInputFields() {
-		txtMovieId.clear();
-		txtMovieName.clear();
-		txtDuration.clear();
-		txtActor.clear();
-		txtStatus.clear();
-		txtDirectorId.clear();
-	}
+    private void updateMovieFromInput(Movie movie) throws Exception {
+        Movie updatedInfo = getMovieFromInput();
+        movie.setMovieName(updatedInfo.getMovieName());
+        movie.setDuration(updatedInfo.getDuration());
+        movie.setActor(updatedInfo.getActor());
+        movie.setStatus(updatedInfo.getStatus());
+        movie.setDirector(updatedInfo.getDirector());
+    }
 
-	public int getRoleID() {
-		return roleID;
-	}
+    private void showMovie(Movie movie) {
+        txtMovieId.setText(String.valueOf(movie.getMovieId()));
+        txtMovieName.setText(movie.getMovieName());
+        txtDuration.setText(String.valueOf(movie.getDuration()));
+        txtActor.setText(movie.getActor());
+        txtStatus.setText(movie.getStatus());
+        comboBoxDirector.setValue(movie.getDirector());
+    }
 
-	public void setRoleID(int roleID) {
-		this.roleID = roleID;
+    private void refreshDataTable() {
+        tableModel.setAll(movieRepository.findAll());
+        clearInputFields();
+    }
 
-		switch (this.roleID) {
-		case 1: {
-			break;
-		}
-		case 2: {
-			this.btnAdd.setDisable(true);
-			this.btnDelete.setDisable(true);
-			break;
-		}
-		case 3: {
-			break;
-		}
-		case 4: {
-			this.btnAdd.setDisable(true);
-			this.btnDelete.setDisable(true);
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Unexpected value: " + this.roleID);
-		}
+    private void clearInputFields() {
+        txtMovieId.clear();
+        txtMovieName.clear();
+        txtDuration.clear();
+        txtActor.clear();
+        txtStatus.clear();
+        comboBoxDirector.setValue(null);
+        // Reset styles
+        txtMovieName.setStyle("");
+    }
 
-	}
+    public void setRoleID(int roleID) {
+        this.roleID = roleID;
+        configureButtonsByRole(roleID);
+    }
 
+    private void configureButtonsByRole(int roleID) {
+        switch (roleID) {
+            case 1 -> { /* Admin: All permissions */ }
+            case 2 -> {
+                btnAdd.setDisable(true);
+                btnDelete.setDisable(true);
+            }
+            case 3 -> btnDelete.setDisable(true);
+            case 4 -> {
+                btnAdd.setDisable(true);
+                btnDelete.setDisable(true);
+            }
+            default -> throw new IllegalArgumentException("Invalid role ID: " + roleID);
+        }
+    }
+
+    @Override
+    public Movie valid(Movie movie) throws Exception {
+        if (movie.getDirector() == null) {
+            throw new Exception("Director is required");
+        }
+
+        if (movie.getMovieName().length() >= MAX_MOVIE_NAME_LENGTH) {
+            throw new Exception("Movie name must be less than " + MAX_MOVIE_NAME_LENGTH + " characters");
+        }
+
+        if (!movie.getMovieName().matches(MOVIE_NAME_PATTERN)) {
+            throw new Exception("Invalid movie name format. Each word must begin with a capital letter and contain only letters.");
+        }
+
+        if (movie.getDuration() < MIN_DURATION || movie.getDuration() > MAX_DURATION) {
+            throw new Exception("Duration must be between " + MIN_DURATION + " and " + MAX_DURATION + " minutes");
+        }
+
+        if (!VALID_STATUSES.contains(movie.getStatus().toLowerCase())) {
+            throw new Exception("Invalid status. Must be one of: " + String.join(", ", VALID_STATUSES));
+        }
+
+        return movie;
+    }
 }

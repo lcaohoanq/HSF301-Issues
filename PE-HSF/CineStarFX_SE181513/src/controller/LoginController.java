@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import pe.hsf301.fall24.pojo.Account;
 import pe.hsf301.fall24.repository.account.AccountRepo;
 import pe.hsf301.fall24.repository.account.IAccountRepository;
+import util.RoleHandler;
 
 public class LoginController {
 
@@ -70,28 +71,7 @@ public class LoginController {
         
         MovieManagementController smController = loader.getController();
         
-        //1: admin, 2: staff, 3: manager, 4: customer
-        switch (account.getRoleId()) {
-        case 1: {
-            smController.setRoleID(1);
-            break;
-        }
-        case 2: {
-            smController.setRoleID(2);
-            break;
-        }
-        case 3: {
-            smController.setRoleID(3);
-            break;
-        }
-        case 4: {
-            smController.setRoleID(4);
-            break;
-        }
-        default:
-            throw new IllegalArgumentException("Unexpected value: " + account.getRoleId());
-    	}
-
+        RoleHandler.checkRole(smController, account);
         
         Stage currentStage = (Stage) txtPassword.getScene().getWindow();
         currentStage.close();
