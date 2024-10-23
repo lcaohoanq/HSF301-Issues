@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -8,117 +9,87 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity"
-	prefHeight="450.0" prefWidth="650.0"
-	style="-fx-background-color: #33FFFF;"
-	xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-	fx:controller="controller.MoiveManagementController">
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="650.0" style="-fx-background-color: #33FFFF;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MovieManagementController">
 	<children>
-		<Label layoutX="234.0" layoutY="3.0" prefHeight="39.0"
-			prefWidth="169.0" text="Movie Management" textFill="WHITE">
+		<Label layoutX="234.0" layoutY="3.0" prefHeight="39.0" prefWidth="169.0" text="Movie Management" textFill="WHITE">
 			<font>
 				<Font size="18.0" />
 			</font>
 		</Label>
-		<Label layoutX="37.0" layoutY="42.0" text="MovieID"
-			textFill="WHITE">
+		<Label layoutX="37.0" layoutY="42.0" text="MovieID" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<TextField id="txtStudentId" fx:id="txtMovieId"
-			layoutX="127.0" layoutY="37.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtStudentId" fx:id="txtMovieId" layoutX="127.0" layoutY="37.0" prefHeight="26.0" prefWidth="424.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
-		<Label layoutX="33.0" layoutY="68.0" text="MovieName"
-			textFill="WHITE">
+		<Label layoutX="33.0" layoutY="68.0" text="MovieName" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<Label layoutX="33.0" layoutY="97.0" text="Duration"
-			textFill="WHITE">
+		<Label layoutX="33.0" layoutY="97.0" text="Duration" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<Label layoutX="41.0" layoutY="124.0" text="Actor"
-			textFill="WHITE">
+		<Label layoutX="41.0" layoutY="124.0" text="Actor" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<TextField id="txtFirstName" fx:id="txtMovieName"
-			layoutX="127.0" layoutY="64.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtFirstName" fx:id="txtMovieName" layoutX="127.0" layoutY="64.0" prefHeight="26.0" prefWidth="424.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
-		<TextField id="txtLastName" fx:id="txtDuration"
-			layoutX="125.0" layoutY="92.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtLastName" fx:id="txtDuration" layoutX="125.0" layoutY="92.0" prefHeight="26.0" prefWidth="424.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
-		<TextField id="txtMark" fx:id="txtActor" layoutX="126.0"
-			layoutY="121.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtMark" fx:id="txtActor" layoutX="126.0" layoutY="121.0" prefHeight="26.0" prefWidth="424.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
-		<TableView id="tblStudents" fx:id="tblMovies"
-			layoutX="48.0" layoutY="228.0" prefHeight="152.0" prefWidth="537.0">
+		<TableView id="tblStudents" fx:id="tblMovies" layoutY="231.0" prefHeight="152.0" prefWidth="650.0">
 			<columns>
-				<TableColumn fx:id="movieId" prefWidth="75.0"
-					text="MovieID" />
-				<TableColumn fx:id="movieName" prefWidth="75.0"
-					text="MovieName" />
-				<TableColumn fx:id="duration" prefWidth="75.0"
-					text="Duration" />
-				<TableColumn fx:id="actor" prefWidth="75.0" text="Actor" />
-				<TableColumn fx:id="status" prefWidth="75.0"
-					text="Status" />
-				<TableColumn fx:id="directorId" prefWidth="75.0"
-					text="DirectorID" />
+				<TableColumn fx:id="movieId" prefWidth="64.0" text="MovieID" />
+				<TableColumn fx:id="movieName" prefWidth="124.0" text="MovieName" />
+				<TableColumn fx:id="duration" prefWidth="78.0" text="Duration" />
+				<TableColumn fx:id="actor" prefWidth="116.0" text="Actor" />
+				<TableColumn fx:id="status" prefWidth="75.0" text="Status" />
+				<TableColumn fx:id="directorId" prefWidth="187.0" text="DirectorName" />
 			</columns>
 		</TableView>
-		<Button id="btnAdd" fx:id="btnAdd" layoutX="47.0"
-			layoutY="394.0" mnemonicParsing="false" onAction="#btnAddOnAction"
-			prefHeight="39.0" prefWidth="105.0" text="Add" />
-		<Button id="btnDelete" fx:id="btnDelete" layoutX="174.0"
-			layoutY="393.0" mnemonicParsing="false" onAction="#btnUpdateOnAction"
-			prefHeight="39.0" prefWidth="115.0" text="Update" />
-		<Button id="btnDelete" fx:id="btnDelete" layoutX="318.0"
-			layoutY="393.0" mnemonicParsing="false" onAction="#btnDeleteOnAction"
-			prefHeight="39.0" prefWidth="116.0" text="Delete" />
-		<Button id="btnCancel" fx:id="btnCancel" layoutX="468.0"
-			layoutY="394.0" mnemonicParsing="false" onAction="#btnCancelOnAction"
-			prefHeight="39.0" prefWidth="120.0" text="Cancel" />
-		<Label layoutX="43.0" layoutY="158.0" text="Status"
-			textFill="WHITE">
+		<Button id="btnAdd" fx:id="btnAdd" layoutX="47.0" layoutY="394.0" mnemonicParsing="false" onAction="#btnAddOnAction" prefHeight="39.0" prefWidth="105.0" text="Add" />
+		<Button id="btnDelete" fx:id="btnDelete" layoutX="174.0" layoutY="393.0" mnemonicParsing="false" onAction="#btnUpdateOnAction" prefHeight="39.0" prefWidth="115.0" text="Update" />
+		<Button id="btnDelete" fx:id="btnDelete" layoutX="318.0" layoutY="393.0" mnemonicParsing="false" onAction="#btnDeleteOnAction" prefHeight="39.0" prefWidth="116.0" text="Delete" />
+		<Button id="btnCancel" fx:id="btnCancel" layoutX="468.0" layoutY="394.0" mnemonicParsing="false" onAction="#btnCancelOnAction" prefHeight="39.0" prefWidth="120.0" text="Cancel" />
+		<Label layoutX="43.0" layoutY="158.0" text="Status" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<TextField id="txtMark" fx:id="txtStatus" layoutX="126.0"
-			layoutY="154.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtMark" fx:id="txtStatus" layoutX="126.0" layoutY="154.0" prefHeight="26.0" prefWidth="424.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
-		<Label layoutX="37.0" layoutY="184.0" text="DirectorID"
-			textFill="WHITE">
+		<Label layoutX="37.0" layoutY="184.0" text="DirectorName" textFill="WHITE">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</Label>
-		<TextField id="txtMark" fx:id="txtDirectorId"
-			layoutX="125.0" layoutY="187.0" prefHeight="26.0" prefWidth="424.0">
+		<TextField id="txtMark" fx:id="txtDirectorId" layoutX="433.0" layoutY="187.0" prefHeight="26.0" prefWidth="116.0">
 			<font>
 				<Font name="Arial" size="13.0" />
 			</font>
 		</TextField>
+      <ComboBox fx:id="comboBoxDirector" layoutX="125.0" layoutY="192.0" prefWidth="150.0" promptText="Select director here" />
 	</children>
 </AnchorPane>

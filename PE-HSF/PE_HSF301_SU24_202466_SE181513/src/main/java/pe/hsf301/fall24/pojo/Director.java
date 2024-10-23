@@ -52,7 +52,7 @@ public class Director {
 
 	@Override
 	public String toString() {
-		return "Director [id=" + id + ", directorName=" + directorName + ", nationality=" + nationality + "]";
+	    return this.getDirectorName(); // Assuming Director has a getName() method
 	}
 
 	public Director(String directorName, String nationality) {

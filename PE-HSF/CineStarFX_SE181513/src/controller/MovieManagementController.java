@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -23,7 +24,7 @@ import pe.hsf301.fall24.repository.movie.IMovieRepository;
 import pe.hsf301.fall24.repository.movie.MovieRepo;
 import util.AlertHandler;
 
-public class MoiveManagementController implements Initializable {
+public class MovieManagementController implements Initializable {
 
 	private final IMovieRepository movieRepository;
 	private final IDirectorRepository directorRepository;
@@ -41,6 +42,8 @@ public class MoiveManagementController implements Initializable {
 	private TextField txtStatus;
 	@FXML
 	private TextField txtDirectorId;
+	@FXML
+	private ComboBox<Director> comboBoxDirector;
 
 	@FXML
 	private Button btnAdd;
@@ -69,7 +72,7 @@ public class MoiveManagementController implements Initializable {
 	private int roleID;
 	public static String hibernateConfig = "hibernate.cfg.xml";
 
-	public MoiveManagementController() {
+	public MovieManagementController() {
 		movieRepository = new MovieRepo(hibernateConfig);
 		directorRepository = new DirectorRepo(hibernateConfig);
 		tableModel = FXCollections.observableArrayList(movieRepository.findAll());
@@ -87,6 +90,19 @@ public class MoiveManagementController implements Initializable {
 				txtMovieId.setEditable(false);
 			}
 		});
+		// Load directors into ComboBox
+	    loadDirectorsIntoComboBox();
+	}
+
+	private void loadDirectorsIntoComboBox() {
+	    // Fetch all directors from the repository
+	    List<Director> directors = directorRepository.findAll();
+	    
+	    // Convert the list to an observable list
+	    ObservableList<Director> directorList = FXCollections.observableArrayList(directors);
+	    
+	    // Set the directors in the ComboBox
+	    comboBoxDirector.setItems(directorList);
 	}
 
 	private void initializeTableColumns() {

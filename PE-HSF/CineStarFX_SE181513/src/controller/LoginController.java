@@ -68,7 +68,7 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../application/MovieManagementGUI.fxml"));
         Parent root = loader.load();
         
-        MoiveManagementController smController = loader.getController();
+        MovieManagementController smController = loader.getController();
         
         //1: admin, 2: staff, 3: manager, 4: customer
         switch (account.getRoleId()) {
