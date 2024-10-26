@@ -74,6 +74,7 @@ public class MovieManagementController extends ValidationHandler<Movie> implemen
         setupEventHandlers();
     }
 
+    //this function will take the class props to set the table column
     private void initializeTableColumns() {
         movieId.setCellValueFactory(new PropertyValueFactory<>("movieId"));
         movieName.setCellValueFactory(new PropertyValueFactory<>("movieName"));
@@ -103,10 +104,11 @@ public class MovieManagementController extends ValidationHandler<Movie> implemen
 
         // Add listeners for real-time validation
         txtMovieName.textProperty().addListener((observable, oldValue, newValue) -> {
-            validateMovieName(newValue);
+            validateMovieName(newValue); //text color validation
         });
 
         txtDuration.textProperty().addListener((observable, oldValue, newValue) -> {
+        	//if not a number, then replace with empty string immediately
             if (!newValue.matches("\\d*")) {
                 txtDuration.setText(newValue.replaceAll("[^\\d]", ""));
             }
