@@ -1,0 +1,42 @@
+/* Root styles */
+.root {
+    -fx-background-color: #33FFFF;
+    -fx-font-family: "Arial";
+}
+
+/* Label styles */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+/* Title label specific style */
+#movieManagementTitle {
+    -fx-font-size: 18px;
+}
+
+/* TextField styles */
+.text-field {
+    -fx-background-color: #33FF33;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-family: "Arial";
+}
+
+/* Button styles */
+.button {
+    -fx-font-family: "Arial";
+    -fx-font-size: 13px;
+    -fx-text-fill: black;
+}
+
+/* TableView styles */
+.table-view {
+    -fx-font-family: "Arial";
+    -fx-font-size: 13px;
+}
+
+.table-column {
+    -fx-font-size: 13px;
+}

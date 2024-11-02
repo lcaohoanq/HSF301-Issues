@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="450.0" style="-fx-background-color: #33FFFF; -fx-alignment: center;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
+    <children>
+        <Label layoutX="179.0" layoutY="34.0" style="-fx-text-fill: white; -fx-alignment: center;" text="Login Form">
+            <font>
+                <Font name="Arial" size="18.0" />
+            </font>
+        </Label>
+        <Label layoutX="75.0" layoutY="102.0" style="-fx-text-fill: white; -fx-alignment: center-left;" text="Email">
+            <font>
+                <Font name="Arial" size="13.0" />
+            </font>
+        </Label>
+        <Label layoutX="75.0" layoutY="167.0" style="-fx-text-fill: white; -fx-alignment: center-left;" text="Password">
+            <font>
+                <Font name="Arial" size="13.0" />
+            </font>
+        </Label>
+        <TextField id="txtEmail" fx:id="txtEmail" layoutX="179.0" layoutY="98.0" 
+                  style="-fx-background-color: #33FF33; -fx-text-fill: white; -fx-alignment: center-left; -fx-font-family: Arial;">
+            <font>
+                <Font name="Arial" size="13.0" />
+            </font>
+        </TextField>
+        <PasswordField id="txtPassword" fx:id="txtPassword" layoutX="179.0" layoutY="162.0" 
+                      style="-fx-background-color: #33FF33; -fx-text-fill: white; -fx-alignment: center-left; -fx-font-family: Arial;">
+            <font>
+                <Font name="Arial" size="13.0" />
+            </font>
+        </PasswordField>
+        <Button id="btnLogin" fx:id="btnLogin" layoutX="132.0" layoutY="244.0" mnemonicParsing="false" 
+                onAction="#btnLoginAction" style="-fx-font-family: Arial; -fx-text-fill: white;" text="Login">
+            <font>
+                <Font name="Arial" size="13.0" />
+            </font>
+        </Button>
+    </children>
+</AnchorPane>
